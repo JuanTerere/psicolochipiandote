@@ -1024,10 +1024,9 @@
             localStorage.setItem('psico_yuko_stats_v2', JSON.stringify(stats));
 
             const mixName = mixesData[finalRecommendedMix].name;
-            const currentUrl = window.location.href;
-            
-            const message = `Pasé a que la Chipa Viajera me Psicolochipee un ratito. Me hizo re bien y me recomendó el ${mixName}. Te recomiendo pasar un ratito. Te va a cambiar el día: ${currentUrl}`;
-            
+
+            const message = `Pas\u00e9 a que la Chipa Viajera me Psicolochipee un ratito.\nMe hizo re bien y me recomend\u00f3 el *${mixName}*\nTe recomiendo pasar un ratito. Te va a cambiar el d\u00eda: https://juanterere.github.io/psicolochipiandote/`;
+
             const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
         }
@@ -1081,15 +1080,11 @@
             ctx.arc(150, 1700, 450, 0, Math.PI * 2);
             ctx.fill();
 
-            // 3. Textos superiores (Fuera del recuadro)
+            // 3. Texto superior (Fuera del recuadro)
             ctx.fillStyle = '#FFFFFF';
             ctx.font = 'bold 44px "Outfit", sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText('JUAN TERER\u00c9', 540, 130);
-
-            ctx.fillStyle = '#D4E8DC';
-            ctx.font = '32px "Outfit", sans-serif';
-            ctx.fillText('Psicolochipe\u00e1ndote\'\u00ed', 540, 185);
 
             // 4. Caja contenedora translúcida
             ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
@@ -1101,33 +1096,38 @@
 
             // 5. Contenido del Recuadro
 
+            // Título del recuadro: Psicolochipeándote'i
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = '600 40px "Outfit", sans-serif';
+            ctx.fillText('Psicolochipe\u00e1ndote\'\u00ed', 540, 300);
+
             // Texto: Hoy recomendó
             ctx.fillStyle = '#D4E8DC';
             ctx.font = '600 32px "Outfit", sans-serif';
-            ctx.fillText('Hoy, La Chipa Viajera me recomend\u00f3:', 540, 340);
+            ctx.fillText('Hoy, La Chipa Viajera me recomend\u00f3:', 540, 355);
 
             // Nombre del mix
             ctx.fillStyle = '#FFFFFF';
             ctx.font = 'bold 65px "Playfair Display", serif';
-            ctx.fillText(mixInfo.name, 540, 420);
+            ctx.fillText(mixInfo.name, 540, 435);
 
             // Línea divisoria
             ctx.strokeStyle = 'rgba(212, 232, 220, 0.4)';
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.moveTo(240, 460);
-            ctx.lineTo(840, 460);
+            ctx.moveTo(240, 475);
+            ctx.lineTo(840, 475);
             ctx.stroke();
 
             // Descripción (Usamos wrapText por si es larga)
             ctx.fillStyle = '#E2ECE5';
             ctx.font = '30px "Outfit", sans-serif';
-            wrapText(ctx, mixInfo.description, 540, 520, 720, 42);
+            wrapText(ctx, mixInfo.description, 540, 535, 720, 42);
 
             // 6. Dibujo de la Imagen de la Chipa y el Mix en el centro
             if (productImg && productImg.complete && productImg.naturalWidth !== 0) {
-                const maxW = 550; // Espacio máximo disponible
-                const maxH = 550;
+                const maxW = 620; // Espacio máximo disponible (un poco más grande)
+                const maxH = 620;
                 // Calculamos el tamaño real respetando la proporción original de la imagen
                 const naturalRatio = productImg.naturalWidth / productImg.naturalHeight;
                 let w = maxW;
@@ -1147,11 +1147,11 @@
             // 7. Textos Inferiores y Llamados a la Acción
             ctx.fillStyle = '#FFFFFF';
             ctx.font = '600 32px "Outfit", sans-serif';
-            ctx.fillText('Etiquet\u00e1 a @juanterere y @yukoparaguay', 540, 1350);
+            ctx.fillText('Etiquet\u00e1 a @juanterere y @yukoparaguay', 540, 1410);
 
             ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
             ctx.font = '30px "Outfit", sans-serif';
-            wrapText(ctx, 'Pas\u00e1 un ratito junto a la Chipa Viajera y dej\u00e1 que te Psicolochipee un ratito.', 540, 1460, 720, 42);
+            wrapText(ctx, 'Pas\u00e1 un ratito junto a la Chipa Viajera y dej\u00e1 que te Psicolochipee un ratito.', 540, 1490, 720, 42);
 
             // 8. Derechos de autor (Al final del recuadro)
             ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
