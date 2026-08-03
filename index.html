@@ -424,104 +424,6 @@
             align-items: center;
         }
 
-        .admin-trigger {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 0.8rem;
-            opacity: 0.7;
-            transition: var(--transition);
-            text-decoration: underline;
-        }
-
-        .admin-trigger:hover {
-            opacity: 1;
-            color: var(--primary-main);
-        }
-
-        /* Admin Modal */
-        .admin-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .admin-content {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 32px;
-            width: 100%;
-            max-width: 550px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            max-height: 90vh;
-            overflow-y: auto;
-            text-align: left;
-        }
-
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-        }
-
-        .admin-header h3 {
-            color: var(--primary-dark);
-            font-size: 1.3rem;
-        }
-
-        .close-admin {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-muted);
-        }
-
-        .stat-box {
-            background: var(--bg-color);
-            padding: 14px 18px;
-            border-radius: var(--radius-sm);
-            margin-bottom: 12px;
-            border: 1px solid var(--border-color);
-        }
-
-        .stat-box h4 {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
-
-        .stat-box p {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--primary-dark);
-        }
-
-        .stat-list {
-            list-style: none;
-            margin-top: 6px;
-        }
-
-        .stat-list li {
-            display: flex;
-            justify-content: space-between;
-            padding: 4px 0;
-            font-size: 0.95rem;
-            border-bottom: 1px dashed var(--border-color);
-        }
-
         @media (max-width: 600px) {
             .screen {
                 padding: 24px 18px;
@@ -637,48 +539,9 @@
     <footer>
         <div class="footer-links">
             <span>Juan Terer&eacute;</span>
-            <span>&bull;</span>
-            <button class="admin-trigger" onclick="openAdminPanel()">Panel Admin</button>
         </div>
         <span>&copy;Mat&iacute;as Brizzio, 2026</span>
     </footer>
-
-    <!-- Admin Modal -->
-    <div id="admin-modal" class="admin-modal">
-        <div class="admin-content">
-            <div class="admin-header">
-                <h3>Panel de Estad&iacute;sticas (Acceso Abierto)</h3>
-                <button class="close-admin" onclick="closeAdminPanel()">&times;</button>
-            </div>
-            
-            <div class="stat-box">
-                <h4>Total de Participantes (Visitantes / Iniciados)</h4>
-                <p id="stat-total">0</p>
-            </div>
-
-            <div class="stat-box">
-                <h4>Tests Finalizados</h4>
-                <p id="stat-finished">0</p>
-            </div>
-
-            <div class="stat-box">
-                <h4>Ranking de Mixes Recomendados</h4>
-                <ul id="stat-mixes" class="stat-list">
-                    <!-- Dinámico -->
-                </ul>
-            </div>
-
-            <div class="stat-box">
-                <h4>Interacciones</h4>
-                <ul class="stat-list">
-                    <li><span>Compartidos por WhatsApp:</span> <strong id="stat-shares">0</strong></li>
-                    <li><span>Im&aacute;genes Descargadas:</span> <strong id="stat-downloads">0</strong></li>
-                </ul>
-            </div>
-            
-            <button class="btn-secondary" onclick="resetStats()" style="margin-top: 15px; border-color: #d9534f; color: #d9534f;">Reiniciar Estad&iacute;sticas</button>
-        </div>
-    </div>
 
     <!-- Hidden Canvas for Story Generation (1080x1920) -->
     <canvas id="storyCanvas" width="1080" height="1920" style="display:none;"></canvas>
@@ -915,6 +778,7 @@
             let stats = JSON.parse(localStorage.getItem('psico_yuko_stats_v2'));
             stats.totalVisitors += 1;
             localStorage.setItem('psico_yuko_stats_v2', JSON.stringify(stats));
+            logEvent('visit');
         }
 
         initStats();
@@ -937,6 +801,7 @@
             let stats = JSON.parse(localStorage.getItem('psico_yuko_stats_v2'));
             stats.started += 1;
             localStorage.setItem('psico_yuko_stats_v2', JSON.stringify(stats));
+            logEvent('start');
 
             currentStep = 0;
             loadQuestionStep();
@@ -1016,12 +881,14 @@
             stats.finished += 1;
             stats.mixes[mixKey] = (stats.mixes[mixKey] || 0) + 1;
             localStorage.setItem('psico_yuko_stats_v2', JSON.stringify(stats));
+            logEvent('finish', { mix: mixKey });
         }
 
         function shareWhatsApp() {
             let stats = JSON.parse(localStorage.getItem('psico_yuko_stats_v2'));
             stats.shares += 1;
             localStorage.setItem('psico_yuko_stats_v2', JSON.stringify(stats));
+            logEvent('share');
 
             const mixName = mixesData[finalRecommendedMix].name;
 
@@ -1035,6 +902,7 @@
             let stats = JSON.parse(localStorage.getItem('psico_yuko_stats_v2'));
             stats.downloads += 1;
             localStorage.setItem('psico_yuko_stats_v2', JSON.stringify(stats));
+            logEvent('download');
 
             const canvas = document.getElementById('storyCanvas');
             const ctx = canvas.getContext('2d');
@@ -1186,46 +1054,24 @@
             context.fillText(line, x, y);
         }
 
-        function openAdminPanel() {
-            updateAdminStats();
-            document.getElementById('admin-modal').style.display = 'flex';
-        }
-
-        function closeAdminPanel() {
-            document.getElementById('admin-modal').style.display = 'none';
-        }
-
-        function updateAdminStats() {
-            const stats = JSON.parse(localStorage.getItem('psico_yuko_stats_v2'));
-            
-            document.getElementById('stat-total').textContent = `${stats.totalVisitors} visitas / ${stats.started} iniciados`;
-            document.getElementById('stat-finished').textContent = stats.finished;
-            document.getElementById('stat-shares').textContent = stats.shares;
-            document.getElementById('stat-downloads').textContent = stats.downloads;
-
-            const sortedMixes = Object.entries(stats.mixes).sort((a, b) => b[1] - a[1]);
-            
-            const mixesListHtml = sortedMixes.map(([key, count]) => {
-                const name = mixesData[key] ? mixesData[key].name : key;
-                return `<li><span>${name}:</span> <strong>${count}</strong></li>`;
-            }).join('');
-
-            document.getElementById('stat-mixes').innerHTML = mixesListHtml;
-        }
-
-        function resetStats() {
-            if (confirm('\u00bfEst\u00e1s seguro de reiniciar todas las estad\u00edsticas?')) {
-                const initialStats = {
-                    totalVisitors: 1,
-                    started: 0,
-                    finished: 0,
-                    mixes: { stress: 0, doce_ocho: 0, digest: 0, detox: 0, che_koraso: 0, levantol: 0, tovajepete: 0 },
-                    shares: 0,
-                    downloads: 0
-                };
-                localStorage.setItem('psico_yuko_stats_v2', JSON.stringify(initialStats));
-                updateAdminStats();
+        // Registro de eventos con fecha, para el panel de estadísticas externo
+        // (panel-sponsors.html). Los contadores acumulados (psico_yuko_stats_v2)
+        // se mantienen intactos para no perder el historial ya guardado.
+        function logEvent(type, extra) {
+            const key = 'psico_yuko_events_v1';
+            let events = [];
+            try {
+                events = JSON.parse(localStorage.getItem(key)) || [];
+            } catch (e) {
+                events = [];
             }
+            const now = new Date();
+            const entry = Object.assign({
+                type: type,
+                date: now.toISOString().slice(0, 10) // YYYY-MM-DD
+            }, extra || {});
+            events.push(entry);
+            localStorage.setItem(key, JSON.stringify(events));
         }
     </script>
 </body>
