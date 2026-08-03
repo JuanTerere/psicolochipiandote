@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de Sponsors | Juan Tereré &times; Yuko</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --bg-color: #F7FAF6;
+        --card-bg: #FFFFFF;
+        --primary-dark: #1A3622;
+        --primary-main: #2E5A36;
+        --primary-light: #E2ECE5;
+        --accent-green: #4A8554;
+        --accent-mint: #D4E8DC;
+        --text-main: #223328;
+        --text-muted: #5C7063;
+        --border-color: #E2ECE5;
+        --danger: #B5483F;
+        --radius-lg: 24px;
+        --radius-md: 16px;
+        --radius-sm: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: 'Outfit', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        min-height: 100vh;
+    }
+
+    /* ---------- Pantalla de acceso ---------- */
+    #lock-screen {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(160deg, var(--primary-dark), var(--primary-main));
+        padding: 24px;
+    }
+
+    .lock-card {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        padding: 40px 32px;
+        max-width: 380px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    }
+
+    .lock-card h1 {
+        font-family: 'Playfair Display', serif;
+        color: var(--primary-dark);
+        font-size: 1.6rem;
+        margin-bottom: 6px;
+    }
+
+    .lock-card p {
+        color: var(--text-muted);
+        font-size: 0.92rem;
+        margin-bottom: 24px;
+    }
+
+    .lock-card input {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: var(--radius-sm);
+        border: 2px solid var(--border-color);
+        font-family: 'Outfit', sans-serif;
+        font-size: 1rem;
+        margin-bottom: 12px;
+        text-align: center;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    .lock-card input:focus { border-color: var(--primary-main); }
+
+    .lock-error {
+        color: var(--danger);
+        font-size: 0.85rem;
+        min-height: 18px;
+        margin-bottom: 8px;
+    }
+
+    /* ---------- Botones ---------- */
+    .btn-main {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: var(--radius-md);
+        background: var(--primary-main);
+        color: white;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s;
+    }
+    .btn-main:hover { background: var(--primary-dark); }
+    .btn-main:active { transform: scale(0.98); }
+
+    .btn-outline {
+        padding: 10px 18px;
+        border: 2px solid var(--primary-main);
+        border-radius: var(--radius-md);
+        background: transparent;
+        color: var(--primary-main);
+        font-family: 'Outfit', sans-serif;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .btn-outline:hover { background: var(--primary-main); color: white; }
+
+    .icon-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 2px solid var(--border-color);
+        background: white;
+        color: var(--primary-main);
+        font-size: 1.1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        flex-shrink: 0;
+    }
+    .icon-btn:hover { background: var(--primary-light); border-color: var(--primary-main); }
+
+    /* ---------- Dashboard ---------- */
+    #dashboard { display: none; }
+
+    header.hero {
+        background: linear-gradient(160deg, var(--primary-dark), var(--primary-main));
+        color: white;
+        padding: 36px 24px 60px;
+        text-align: center;
+        position: relative;
+    }
+
+    header.hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.9rem;
+        margin-bottom: 4px;
+    }
+
+    header.hero p {
+        color: var(--accent-mint);
+        font-size: 0.95rem;
+    }
+
+    .container {
+        max-width: 960px;
+        margin: -40px auto 40px;
+        padding: 0 20px 40px;
+    }
+
+    .top-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .panel-card {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        padding: 28px;
+        box-shadow: 0 10px 30px rgba(26,54,34,0.08);
+        margin-bottom: 24px;
+    }
+
+    .panel-card h2 {
+        font-family: 'Playfair Display', serif;
+        color: var(--primary-dark);
+        font-size: 1.3rem;
+        margin-bottom: 4px;
+    }
+
+    .panel-card .subtitle {
+        color: var(--text-muted);
+        font-size: 0.88rem;
+        margin-bottom: 20px;
+    }
+
+    /* Tabs día / semana */
+    .view-tabs {
+        display: flex;
+        gap: 8px;
+        background: var(--bg-color);
+        padding: 6px;
+        border-radius: var(--radius-md);
+        margin-bottom: 20px;
+        width: fit-content;
+    }
+    .view-tab {
+        border: none;
+        background: transparent;
+        padding: 9px 20px;
+        border-radius: var(--radius-sm);
+        font-family: 'Outfit', sans-serif;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .view-tab.active {
+        background: var(--primary-main);
+        color: white;
+    }
+
+    .date-nav {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 22px;
+        flex-wrap: wrap;
+    }
+
+    .date-nav input[type="date"] {
+        padding: 9px 12px;
+        border-radius: var(--radius-sm);
+        border: 2px solid var(--border-color);
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.92rem;
+        color: var(--text-main);
+    }
+
+    .date-range-label {
+        font-weight: 600;
+        color: var(--primary-dark);
+        font-size: 0.95rem;
+    }
+
+    /* Métricas en tarjetas */
+    .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 14px;
+        margin-bottom: 8px;
+    }
+
+    .metric-box {
+        background: var(--primary-light);
+        border-radius: var(--radius-sm);
+        padding: 18px;
+        border-left: 4px solid var(--primary-main);
+    }
+
+    .metric-box .metric-label {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+    }
+
+    .metric-box .metric-value {
+        font-size: 1.9rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+    }
+
+    /* Tabla semanal */
+    .week-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 18px;
+        font-size: 0.9rem;
+    }
+    .week-table th, .week-table td {
+        text-align: center;
+        padding: 10px 6px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .week-table th {
+        color: var(--text-muted);
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+    }
+    .week-table td:first-child, .week-table th:first-child {
+        text-align: left;
+        font-weight: 600;
+        color: var(--primary-dark);
+    }
+    .week-table tr.total-row td {
+        font-weight: 700;
+        color: var(--primary-dark);
+        border-top: 2px solid var(--primary-main);
+        border-bottom: none;
+    }
+
+    /* Ranking de mixes */
+    .rank-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+    .rank-name {
+        width: 190px;
+        flex-shrink: 0;
+        font-size: 0.92rem;
+        font-weight: 500;
+        color: var(--text-main);
+    }
+    .rank-bar-track {
+        flex: 1;
+        background: var(--bg-color);
+        border-radius: 8px;
+        height: 18px;
+        overflow: hidden;
+    }
+    .rank-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent-green), var(--primary-main));
+        border-radius: 8px;
+        transition: width 0.4s ease;
+    }
+    .rank-count {
+        width: 26px;
+        text-align: right;
+        font-weight: 700;
+        color: var(--primary-dark);
+        flex-shrink: 0;
+    }
+
+    /* Totales generales en dos columnas */
+    .totals-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+    }
+
+    .summary-text {
+        background: var(--primary-light);
+        border-left: 4px solid var(--primary-main);
+        border-radius: var(--radius-sm);
+        padding: 18px 20px;
+        font-size: 0.96rem;
+        line-height: 1.6;
+        color: var(--text-main);
+    }
+
+    footer.foot {
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        padding-bottom: 20px;
+    }
+
+    .note-box {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        background: var(--bg-color);
+        border-radius: var(--radius-sm);
+        padding: 12px 16px;
+        margin-top: 6px;
+    }
+
+    @media (max-width: 600px) {
+        .rank-name { width: 120px; font-size: 0.82rem; }
+        header.hero h1 { font-size: 1.5rem; }
+        .panel-card { padding: 20px; }
+    }
+
+    /* ---------- Impresión / PDF ---------- */
+    @media print {
+        body { background: white !important; }
+        .no-print { display: none !important; }
+        header.hero {
+            background: white !important;
+            color: var(--primary-dark) !important;
+            padding: 10px 0 20px;
+        }
+        header.hero p { color: var(--text-muted) !important; }
+        .container { margin-top: 0; max-width: 100%; }
+        .panel-card {
+            box-shadow: none !important;
+            border: 1px solid var(--border-color);
+            page-break-inside: avoid;
+        }
+        .view-tabs { display: none !important; }
+    }
+</style>
+</head>
+<body>
+
+    <!-- ===================== PANTALLA DE ACCESO ===================== -->
+    <div id="lock-screen">
+        <div class="lock-card">
+            <h1>Panel de Sponsors</h1>
+            <p>Juan Tereré &times; Yuko &mdash; Psicolochipeándote'i</p>
+            <input type="password" id="password-input" placeholder="Contraseña" autocomplete="off">
+            <div class="lock-error" id="lock-error"></div>
+            <button class="btn-main" onclick="tryUnlock()">Ingresar</button>
+        </div>
+    </div>
+
+    <!-- ===================== DASHBOARD ===================== -->
+    <div id="dashboard">
+
+        <header class="hero">
+            <h1>Panel de Sponsors</h1>
+            <p>Juan Tereré &times; Yuko &mdash; Psicolochipeándote'i</p>
+        </header>
+
+        <div class="container">
+
+            <div class="top-actions no-print">
+                <button class="btn-outline" onclick="window.print()">&#8681; Descargar PDF</button>
+            </div>
+
+            <!-- Datos por período (día / semana) -->
+            <div class="panel-card">
+                <h2>Datos por per&iacute;odo</h2>
+                <p class="subtitle">Visitas, mensajes de WhatsApp e im&aacute;genes descargadas, filtrado por d&iacute;a o por semana.</p>
+
+                <div class="view-tabs no-print">
+                    <button class="view-tab active" id="tab-day" onclick="setView('day')">Por d&iacute;a</button>
+                    <button class="view-tab" id="tab-week" onclick="setView('week')">Por semana</button>
+                </div>
+
+                <!-- Vista diaria -->
+                <div id="view-day">
+                    <div class="date-nav">
+                        <button class="icon-btn no-print" onclick="shiftDay(-1)">&#8592;</button>
+                        <input type="date" id="day-picker" class="no-print">
+                        <button class="icon-btn no-print" onclick="shiftDay(1)">&#8594;</button>
+                        <span class="date-range-label" id="day-label"></span>
+                    </div>
+                    <div class="metric-grid">
+                        <div class="metric-box">
+                            <div class="metric-label">Visitas</div>
+                            <div class="metric-value" id="day-visits">0</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-label">Mensajes por WhatsApp</div>
+                            <div class="metric-value" id="day-shares">0</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-label">Im&aacute;genes descargadas</div>
+                            <div class="metric-value" id="day-downloads">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vista semanal -->
+                <div id="view-week" style="display:none;">
+                    <div class="date-nav">
+                        <button class="icon-btn no-print" onclick="shiftWeek(-1)">&#8592;</button>
+                        <input type="date" id="week-picker" class="no-print">
+                        <button class="icon-btn no-print" onclick="shiftWeek(1)">&#8594;</button>
+                        <span class="date-range-label" id="week-label"></span>
+                    </div>
+                    <div class="metric-grid">
+                        <div class="metric-box">
+                            <div class="metric-label">Visitas (semana)</div>
+                            <div class="metric-value" id="week-visits">0</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-label">Mensajes por WhatsApp (semana)</div>
+                            <div class="metric-value" id="week-shares">0</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-label">Im&aacute;genes descargadas (semana)</div>
+                            <div class="metric-value" id="week-downloads">0</div>
+                        </div>
+                    </div>
+
+                    <table class="week-table">
+                        <thead>
+                            <tr>
+                                <th>D&iacute;a</th>
+                                <th>Visitas</th>
+                                <th>WhatsApp</th>
+                                <th>Descargas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="week-table-body"></tbody>
+                    </table>
+                </div>
+
+                <div class="note-box" id="data-since-note"></div>
+            </div>
+
+            <!-- Totales generales -->
+            <div class="panel-card">
+                <h2>Totales generales</h2>
+                <p class="subtitle">Acumulado hist&oacute;rico desde que la campa&ntilde;a est&aacute; activa.</p>
+
+                <div class="totals-grid">
+                    <div class="metric-box">
+                        <div class="metric-label">Total de Participantes (Visitantes / Iniciados)</div>
+                        <div class="metric-value" id="total-participants">0 / 0</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Tests Finalizados</div>
+                        <div class="metric-value" id="total-finished">0</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Compartidos por WhatsApp</div>
+                        <div class="metric-value" id="total-shares">0</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Im&aacute;genes Descargadas</div>
+                        <div class="metric-value" id="total-downloads">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ranking de mixes -->
+            <div class="panel-card">
+                <h2>Ranking de Mixes Recomendados</h2>
+                <p class="subtitle">Cu&aacute;ntas veces la Chipa Viajera recomend&oacute; cada mix.</p>
+                <div id="rank-list"></div>
+            </div>
+
+            <!-- Resumen -->
+            <div class="panel-card">
+                <h2>Resumen</h2>
+                <p class="subtitle">Lectura r&aacute;pida de los n&uacute;meros de arriba, lista para compartir.</p>
+                <div class="summary-text" id="summary-text"></div>
+            </div>
+
+        </div>
+
+        <footer class="foot no-print">
+            Datos le&iacute;dos desde este navegador &middot; &copy;Mat&iacute;as Brizzio, 2026
+        </footer>
+    </div>
+
+<script>
+    // ============================================================
+    // CONFIGURACIÓN
+    // ============================================================
+    // Contraseña de acceso al panel. Cambiala acá cuando quieras.
+    const SPONSOR_PASSWORD = "yuko2026";
+
+    const STATS_KEY = 'psico_yuko_stats_v2';
+    const EVENTS_KEY = 'psico_yuko_events_v1';
+
+    const MIX_NAMES = {
+        stress: "Mix Cero Stress",
+        doce_ocho: "Mix Doce Ocho",
+        digest: "Mix Digest Yorador",
+        detox: "Mix Detox",
+        che_koraso: "Mix Koras\u014d / Che Koras\u014d",
+        levantol: "Mix Levantol",
+        tovajepete: "Mix Tovajepete"
+    };
+
+    // ============================================================
+    // ACCESO
+    // ============================================================
+    function tryUnlock() {
+        const val = document.getElementById('password-input').value;
+        if (val === SPONSOR_PASSWORD) {
+            sessionStorage.setItem('sponsor_unlocked', '1');
+            showDashboard();
+        } else {
+            document.getElementById('lock-error').textContent = 'Contrase\u00f1a incorrecta, intent\u00e1 de nuevo.';
+        }
+    }
+
+    document.getElementById('password-input').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') tryUnlock();
+    });
+
+    function showDashboard() {
+        document.getElementById('lock-screen').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        initDashboard();
+    }
+
+    if (sessionStorage.getItem('sponsor_unlocked') === '1') {
+        showDashboard();
+    }
+
+    // ============================================================
+    // DATOS
+    // ============================================================
+    function getStats() {
+        const defaults = { totalVisitors: 0, started: 0, finished: 0, mixes: {}, shares: 0, downloads: 0 };
+        try {
+            const s = JSON.parse(localStorage.getItem(STATS_KEY));
+            return Object.assign({}, defaults, s || {});
+        } catch (e) {
+            return defaults;
+        }
+    }
+
+    function getEvents() {
+        try {
+            return JSON.parse(localStorage.getItem(EVENTS_KEY)) || [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function toISODate(d) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    }
+
+    function parseISODate(s) {
+        const [y, m, d] = s.split('-').map(Number);
+        return new Date(y, m - 1, d);
+    }
+
+    function addDays(d, n) {
+        const r = new Date(d);
+        r.setDate(r.getDate() + n);
+        return r;
+    }
+
+    function startOfWeek(d) {
+        const day = d.getDay(); // 0 = domingo
+        const diff = (day === 0 ? -6 : 1) - day;
+        return addDays(d, diff);
+    }
+
+    function formatShort(d) {
+        return d.toLocaleDateString('es-AR', { weekday: 'short', day: '2-digit', month: '2-digit' });
+    }
+
+    function formatLong(d) {
+        return d.toLocaleDateString('es-AR', { day: '2-digit', month: 'long', year: 'numeric' });
+    }
+
+    function countForDate(events, dateStr) {
+        const res = { visit: 0, start: 0, finish: 0, share: 0, download: 0 };
+        events.forEach(e => {
+            if (e.date === dateStr && res[e.type] !== undefined) res[e.type]++;
+        });
+        return res;
+    }
+
+    // ============================================================
+    // VISTA DÍA / SEMANA
+    // ============================================================
+    let currentView = 'day';
+
+    function setView(view) {
+        currentView = view;
+        document.getElementById('tab-day').classList.toggle('active', view === 'day');
+        document.getElementById('tab-week').classList.toggle('active', view === 'week');
+        document.getElementById('view-day').style.display = view === 'day' ? 'block' : 'none';
+        document.getElementById('view-week').style.display = view === 'week' ? 'block' : 'none';
+    }
+
+    function shiftDay(n) {
+        const picker = document.getElementById('day-picker');
+        const d = addDays(parseISODate(picker.value), n);
+        picker.value = toISODate(d);
+        renderDayView();
+    }
+
+    function shiftWeek(n) {
+        const picker = document.getElementById('week-picker');
+        const d = addDays(parseISODate(picker.value), n * 7);
+        picker.value = toISODate(d);
+        renderWeekView();
+    }
+
+    function renderDayView() {
+        const picker = document.getElementById('day-picker');
+        const dateStr = picker.value;
+        const d = parseISODate(dateStr);
+        document.getElementById('day-label').textContent = formatLong(d);
+
+        const events = getEvents();
+        const counts = countForDate(events, dateStr);
+        document.getElementById('day-visits').textContent = counts.visit;
+        document.getElementById('day-shares').textContent = counts.share;
+        document.getElementById('day-downloads').textContent = counts.download;
+    }
+
+    function renderWeekView() {
+        const picker = document.getElementById('week-picker');
+        const anyDay = parseISODate(picker.value);
+        const monday = startOfWeek(anyDay);
+        const sunday = addDays(monday, 6);
+        document.getElementById('week-label').textContent = `${formatLong(monday)} \u2013 ${formatLong(sunday)}`;
+
+        const events = getEvents();
+        let totalVisit = 0, totalShare = 0, totalDownload = 0;
+        let rows = '';
+        for (let i = 0; i < 7; i++) {
+            const day = addDays(monday, i);
+            const dateStr = toISODate(day);
+            const c = countForDate(events, dateStr);
+            totalVisit += c.visit;
+            totalShare += c.share;
+            totalDownload += c.download;
+            rows += `<tr>
+                <td>${formatShort(day)}</td>
+                <td>${c.visit}</td>
+                <td>${c.share}</td>
+                <td>${c.download}</td>
+            </tr>`;
+        }
+        rows += `<tr class="total-row">
+            <td>Total semana</td>
+            <td>${totalVisit}</td>
+            <td>${totalShare}</td>
+            <td>${totalDownload}</td>
+        </tr>`;
+
+        document.getElementById('week-table-body').innerHTML = rows;
+        document.getElementById('week-visits').textContent = totalVisit;
+        document.getElementById('week-shares').textContent = totalShare;
+        document.getElementById('week-downloads').textContent = totalDownload;
+    }
+
+    // ============================================================
+    // TOTALES GENERALES / RANKING / RESUMEN
+    // ============================================================
+    function renderTotals() {
+        const stats = getStats();
+        document.getElementById('total-participants').textContent = `${stats.totalVisitors} / ${stats.started}`;
+        document.getElementById('total-finished').textContent = stats.finished;
+        document.getElementById('total-shares').textContent = stats.shares;
+        document.getElementById('total-downloads').textContent = stats.downloads;
+        return stats;
+    }
+
+    function renderRanking(stats) {
+        const entries = Object.entries(MIX_NAMES).map(([key, name]) => {
+            return [name, stats.mixes[key] || 0];
+        }).sort((a, b) => b[1] - a[1]);
+
+        const maxCount = Math.max(1, ...entries.map(e => e[1]));
+
+        const html = entries.map(([name, count]) => {
+            const pct = Math.round((count / maxCount) * 100);
+            return `<div class="rank-row">
+                <div class="rank-name">${name}</div>
+                <div class="rank-bar-track"><div class="rank-bar-fill" style="width:${pct}%"></div></div>
+                <div class="rank-count">${count}</div>
+            </div>`;
+        }).join('');
+
+        document.getElementById('rank-list').innerHTML = html;
+        return entries;
+    }
+
+    function renderSummary(stats, rankEntries) {
+        const topMix = rankEntries[0];
+        const completionRate = stats.started > 0 ? Math.round((stats.finished / stats.started) * 100) : 0;
+        const shareRate = stats.finished > 0 ? Math.round((stats.shares / stats.finished) * 100) : 0;
+        const downloadRate = stats.finished > 0 ? Math.round((stats.downloads / stats.finished) * 100) : 0;
+
+        let text = `Hasta el momento, <strong>${stats.totalVisitors}</strong> personas visitaron la experiencia y <strong>${stats.started}</strong> iniciaron el test`;
+        if (stats.totalVisitors > 0) {
+            const startRate = Math.round((stats.started / stats.totalVisitors) * 100);
+            text += ` (${startRate}% de los visitantes)`;
+        }
+        text += `. De esos, <strong>${stats.finished}</strong> lo completaron`;
+        if (stats.started > 0) {
+            text += ` (${completionRate}% de finalizaci\u00f3n)`;
+        }
+        text += `. El mix m\u00e1s recomendado fue <strong>${topMix ? topMix[0] : '-'}</strong>${topMix && topMix[1] > 0 ? ` con ${topMix[1]} recomendaciones` : ''}. `;
+        text += `Del total de personas que terminaron el test, un <strong>${shareRate}%</strong> comparti\u00f3 su resultado por WhatsApp y un <strong>${downloadRate}%</strong> descarg\u00f3 la imagen para sus historias.`;
+
+        document.getElementById('summary-text').innerHTML = text;
+    }
+
+    function renderDataSinceNote() {
+        const events = getEvents();
+        const note = document.getElementById('data-since-note');
+        if (events.length === 0) {
+            note.textContent = 'A\u00fan no hay eventos con fecha registrados en este navegador. Los totales generales de abajo s\u00ed reflejan todo el historial acumulado.';
+            return;
+        }
+        const firstDate = events.reduce((min, e) => e.date < min ? e.date : min, events[0].date);
+        note.textContent = `El detalle por d\u00eda y por semana se registra desde el ${formatLong(parseISODate(firstDate))}. Los totales generales incluyen todo el historial acumulado.`;
+    }
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    function initDashboard() {
+        const today = toISODate(new Date());
+        document.getElementById('day-picker').value = today;
+        document.getElementById('week-picker').value = today;
+
+        document.getElementById('day-picker').addEventListener('change', renderDayView);
+        document.getElementById('week-picker').addEventListener('change', renderWeekView);
+
+        renderDayView();
+        renderWeekView();
+        renderDataSinceNote();
+
+        const stats = renderTotals();
+        const rankEntries = renderRanking(stats);
+        renderSummary(stats, rankEntries);
+    }
+</script>
+</body>
+</html>
